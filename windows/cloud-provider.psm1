@@ -214,6 +214,13 @@ function Get-NodeOverridedName
                 if (-not $?) {
                     Log-Error "Failed to gain the priave DNS name for AWS instance: $nodeName"
                     $nodeName = $null
+                } else {
+                    if ($nodeName -match " ") {
+                        $nodeName = $nodeName.split(" ")[0] # take the first to be safe
+                        if ($nodeName -match ".") {
+                            $nodeName = $nodeName.split(".")[0] + ".ec2.internal" # take the first to be safe
+                        }
+                    }
                 }
             }
             '^\s*gce\s*$' {
@@ -228,9 +235,6 @@ function Get-NodeOverridedName
 
         if ($nodeName) {
             $nodeName = $nodeName.Trim()
-            if ($nodeName -match " ") {
-                $nodeName = $nodeName.split(" ")[0] # take the first to be safe
-            }
             $nodeName | Out-File -NoNewline -Encoding utf8 -Force -FilePath "c:\run\cloud-provider-override-hostname"
             Log-Info "Got overriding hostname $nodeName from metadata"
         }
