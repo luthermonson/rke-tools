@@ -230,9 +230,6 @@ function Get-NodeOverridedName
 
         if ($nodeName) {
             $nodeName = $nodeName.Trim()
-            if ($nodeName -match " ") {
-                $nodeName = $nodeName.split(" ")[0] # take the first to be safe
-            }
             [System.IO.File]::WriteAllText("c:\run\cloud-provider-override-hostname", $nodeName, $Utf8NoBomEncoding)
             Log-Info "Got overriding hostname $nodeName from metadata"
         }
